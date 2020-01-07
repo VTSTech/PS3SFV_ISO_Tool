@@ -56,6 +56,86 @@ Begin VB.Form Form1
       Top             =   600
       Width           =   1815
    End
+   Begin VB.Label Label16 
+      AutoSize        =   -1  'True
+      BackColor       =   &H00808080&
+      Caption         =   "01.00"
+      BeginProperty Font 
+         Name            =   "Arial"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FFFF00&
+      Height          =   210
+      Left            =   3000
+      TabIndex        =   19
+      Top             =   840
+      Width           =   405
+   End
+   Begin VB.Label Label15 
+      AutoSize        =   -1  'True
+      BackColor       =   &H00808080&
+      Caption         =   "FW Ver:"
+      BeginProperty Font 
+         Name            =   "Arial"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FFFF00&
+      Height          =   210
+      Left            =   2040
+      TabIndex        =   18
+      Top             =   840
+      Width           =   600
+   End
+   Begin VB.Label Label14 
+      AutoSize        =   -1  'True
+      BackColor       =   &H00808080&
+      Caption         =   "Game Ver:"
+      BeginProperty Font 
+         Name            =   "Arial"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FFFF00&
+      Height          =   210
+      Left            =   2040
+      TabIndex        =   17
+      Top             =   1080
+      Width           =   780
+   End
+   Begin VB.Label Label13 
+      AutoSize        =   -1  'True
+      BackColor       =   &H00808080&
+      Caption         =   "01.00"
+      BeginProperty Font 
+         Name            =   "Arial"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FFFF00&
+      Height          =   210
+      Left            =   3000
+      TabIndex        =   16
+      Top             =   1080
+      Width           =   405
+   End
    Begin VB.Label Label12 
       AutoSize        =   -1  'True
       BackColor       =   &H00808080&
@@ -239,7 +319,7 @@ Begin VB.Form Form1
    Begin VB.Label Label3 
       AutoSize        =   -1  'True
       BackColor       =   &H00808080&
-      Caption         =   "00000000"
+      Caption         =   "CRC32"
       BeginProperty Font 
          Name            =   "Arial"
          Size            =   8.25
@@ -254,12 +334,12 @@ Begin VB.Form Form1
       Left            =   120
       TabIndex        =   6
       Top             =   1080
-      Width           =   720
+      Width           =   495
    End
    Begin VB.Label Label2 
       AutoSize        =   -1  'True
       BackColor       =   &H00808080&
-      Caption         =   "BLUS00000"
+      Caption         =   "DISC_ID"
       BeginProperty Font 
          Name            =   "Arial"
          Size            =   8.25
@@ -274,12 +354,12 @@ Begin VB.Form Form1
       Left            =   120
       TabIndex        =   5
       Top             =   840
-      Width           =   855
+      Width           =   570
    End
    Begin VB.Label Label1 
       AutoSize        =   -1  'True
       BackColor       =   &H00808080&
-      Caption         =   "PS3_GAME"
+      Caption         =   "GAME_TITLE"
       BeginProperty Font 
          Name            =   "Arial"
          Size            =   8.25
@@ -294,7 +374,7 @@ Begin VB.Form Form1
       Left            =   120
       TabIndex        =   4
       Top             =   600
-      Width           =   825
+      Width           =   930
    End
 End
 Attribute VB_Name = "Form1"
@@ -303,8 +383,8 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Dim a, x, y, z As Integer
-Dim tmp, fn, id, CRC, path, fw, title, fullpath, Build As String
-Dim sfv_title, sfv_id, sfv_crc, lbl_path, lbl_crc, lbl_id, lbl_fn, lbl_fw, lbl_title As String
+Dim tmp, fn, id, CRC, path, fw, title, fullpath, Build, gamever, fwver As String
+Dim sfv_title, sfv_id, sfv_crc, sfv_fwver, sfv_gamever, lbl_path, lbl_crc, lbl_id, lbl_fn, lbl_fw, lbl_title, lbl_gamever, lbl_fwver As String
 Dim checked, up As Boolean
 Dim param_sfo, crc_txt, tmp2, f, FSO
 Dim sfv_data(1024)
@@ -352,10 +432,13 @@ If FSO.FileExists(fullpath) Then
     For x = 0 To UBound(tmp) - 1
         path = path & tmp(x) & "\"
     Next x
+    'Extract PARAM.SFO from seelcted ISO using 7-Zip
     Shell (VB.App.path & "\bin\7z\7z e -y -r -o" & VB.App.path & "\tmp\ " & fullpath & " PARAM.SFO"), vbHide
     Sleep (500)
+    'Begin calculate of CRC32 using 7-Zip
     Shell ("cmd.exe /c " & Chr(34) & VB.App.path & "\bin\7z\7z h " & fullpath & Chr(34) & " >> " & VB.App.path & "\tmp\crc.txt"), vbHide
     Sleep (2500)
+    'PARAM.SFO should be extracted now...
     If FSO.FileExists(VB.App.path & "\tmp\PARAM.SFO") Then
         'MsgBox ("We Good")
         id = ""
@@ -367,19 +450,33 @@ If FSO.FileExists(fullpath) Then
         tmp2 = ""
         Close #1
         Open VB.App.path & "\tmp\PARAM.SFO" For Input As #1
+        'Null bytes are ignored with this read method
+        'Read PARAM.SFO into param_sfo variable
         Do
             Input #1, tmp
             param_sfo = param_sfo & tmp
         Loop Until EOF(1)
+        'Splits param_sfo into array after first 100 bytes
+        'Uses Hex(01) as delimeter
         tmp2 = Split(Mid(param_sfo, 100, Len(param_sfo)), Chr(1))
+        'Disc ID will now be at fixed position in array, The top of it.
         id = Mid(tmp2(UBound(tmp2)), Len(tmp2(UBound(tmp2))) - 13, 9)
+        'FW Version will now be at fixed position in array, 2nd from top
+        fwver = Mid(tmp2(1), Len(tmp2(1)) - 8, 5)
+        'Now split param_sfo array again, using Disc ID as delimiter
         tmp2 = Split(tmp2(UBound(tmp2)), id)
+        'Game Title now at fixed position in array, Bottom of it.
         title = tmp2(0)
+        'Game Version now at fixed position in array, Top of it
+        gamever = tmp2(1)
         Close #1
         Close #2
         Set f = FSO.GetFile(VB.App.path & "\tmp\crc.txt")
         up = True
         z = 0
+        'Generating CRC can take time. We know ISO exist. If crc.txt doesn't must still be generating.
+        'Lets wait. Changes Form title with # 0 to 32767 and down ... then up and so on until crc.txt
+        'is generated.
         While f.Size < 28
         Do
             If z < 32767 And up = True Then
@@ -394,6 +491,7 @@ If FSO.FileExists(fullpath) Then
         Wend
         Form1.Caption = "PS3SFV ISO Tool v" & Build & " (www.VTS-Tech.org)"
         Sleep (2000)
+        'crc.txt should be done now.
         Open VB.App.path & "\tmp\crc.txt" For Input As #2
         Do
             Input #2, tmp
@@ -421,10 +519,14 @@ lbl_fn = fn
 lbl_crc = CRC
 lbl_id = id
 lbl_title = title
+lbl_gamever = gamever
+lbl_fwver = fwver
 Label10.Caption = lbl_title
 Label11.Caption = lbl_path
 Label9.Caption = lbl_id
 Label8.Caption = lbl_crc
+Label13.Caption = lbl_gamever
+Label16.Caption = lbl_fwver
 Text1.Text = lbl_fn
 If FSO.FileExists(VB.App.path & "\SFV\" & id & "-IMAGE.SFV") Then
     Label12.ForeColor = &HFF00&
@@ -439,6 +541,8 @@ lbl_crc = ""
 lbl_title = ""
 lbl_path = ""
 lbl_fn = ""
+lbl_gamever = ""
+lbl_fwver = ""
 End Function
 
 Private Sub Command2_Click()
@@ -463,6 +567,10 @@ Else
                 sfv_title = Mid(sfv_data(z), 8, Len(sfv_data(z)))
             ElseIf Mid(sfv_data(z), 1, 8) = ";DISCID=" Then
                 sfv_id = Mid(sfv_data(z), 9, Len(sfv_data(z)))
+            ElseIf Mid(sfv_data(z), 1, 9) = ";GAMEVER=" Then
+                sfv_gamever = Mid(sfv_data(z), 10, Len(sfv_data(z)))
+            ElseIf Mid(sfv_data(z), 1, 7) = ";FWVER=" Then
+                sfv_fwver = Mid(sfv_data(z), 8, Len(sfv_data(z)))
             End If
         Next z
         
@@ -489,18 +597,30 @@ Else
             Label7.Caption = "Verified: NO"
             Label9.ForeColor = &HFF&
         End If
-        
+        If sfv_fwver = fwver Then
+            Label16.ForeColor = &HFF00&
+        Else
+            Label7.ForeColor = &HFF&
+            Label7.Caption = "Verified: NO"
+            Label16.ForeColor = &HFF&
+        End If
+        If sfv_gamever = gamever Then
+            Label13.ForeColor = &HFF00&
+        Else
+            Label7.ForeColor = &HFF&
+            Label7.Caption = "Verified: NO"
+            Label13.ForeColor = &HFF&
+        End If
     Else
         MsgBox "No Verification Data found!"
     End If
 End If
-
 a = UpdFrm()
 End Sub
 
 Private Sub Form_Load()
 'Set FSO = CreateObject("Scripting.FileSystemObject")
-Build = "0.1-alpha1"
+Build = "0.1-alpha2"
 checked = False
 tmp = ""
 Form1.Caption = "PS3SFV ISO Tool v" & Build & " (www.VTS-Tech.org)"
@@ -508,6 +628,8 @@ Label1.Caption = "Game Title: "
 Label6.Caption = "Path: "
 Label2.Caption = "Disc ID: "
 Label3.Caption = "ISO CRC32: "
+Label14.Caption = "Game Ver: "
+Label15.Caption = "FW Ver: "
 Label7.ForeColor = &HFF&
 Label12.ForeColor = &HFF&
 lbl_path = "C:\TEMP\"
@@ -516,12 +638,6 @@ lbl_crc = "00000000"
 lbl_id = "BLUS00000"
 lbl_title = "PS3_GAME"
 a = UpdFrm()
-
-'MsgBox Hex(m_CRC.CalculateFile(VB.App.Path & "\Minecraft_PlayStation3_Edition_BLUS31426_USA_PS3iSO-VERiTAS.iso"))
-'MsgBox Hex(m_CRC.CalculateFile(ShortPath(tmp)))
-'MsgBox VB.App.Path & "\Minecraft_PlayStation3_Edition_BLUS31426_USA_PS3iSO-VERiTAS.iso"
-'tmp = VB.App.Path & "\Minecraft_PlayStation3_Edition_BLUS31426_USA_PS3iSO-VERiTAS.iso"
-
 End Sub
 
 Private Sub Label1_Click()
@@ -536,7 +652,7 @@ Else
         MsgBox "Verification Available!"
     Else
         Open (VB.App.path & "\SFV\" & id & "-IMAGE.SFV") For Output As #3
-        tmp = ";TITLE=" & title & vbCrLf & ";DISCID=" & id & vbCrLf & fn & " " & CRC
+        tmp = ";Generated by PS3SFV ISO Tool v" & Build & ". Do Not Modify!" & vbCrLf & ";TITLE=" & title & vbCrLf & ";DISCID=" & id & vbCrLf & ";GAMEVER=" & gamever & vbCrLf & ";FWVER=" & fwver & vbCrLf & fn & " " & CRC
         Print #3, tmp
         Close #3
         Label12.ForeColor = &HFF00&
@@ -544,7 +660,6 @@ Else
         MsgBox ("Verification Data written to " & VB.App.path & "\SFV\" & id & "-IMAGE.SFV")
     End If
 End If
-
 End Sub
 
 Private Sub Label2_Click()
