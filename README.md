@@ -13,9 +13,12 @@ Click 'Data Avail: NO' to save Verification Data.
 Click Verify to use available Verification Data against selected ISO</pre>
 
 <pre>
-Current thinking is have two SFV files per Disc ID, One for entire unencrypted image CRC32, Another for 'Disc Contents' individual file SFV for determining incorrect/modified files.
+Current thinking is have two SFV files per Disc ID
+One for entire unencrypted image CRC32
+Another for 'Disc Contents' individual file SFV for determining incorrect/modified files.
 
-SFV Files can support comments with ; prefix, Can use fields there to store 'Game Title', 'FW Version' and a few other things
+SFV Files can support comments with ; prefix
+Can use fields there to store 'Game Title', 'FW Version' and a few other things
 </pre>
 
 Example SFV
