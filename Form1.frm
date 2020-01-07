@@ -383,7 +383,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Dim a, x, y, z As Integer
-Dim tmp, fn, id, CRC, path, fw, title, fullpath, Build, gamever, fwver As String
+Dim tmp, fn, id, CRC, path, fw, title, fullpath, Build, gamever, fwver, ver As String
 Dim sfv_title, sfv_id, sfv_crc, sfv_fwver, sfv_gamever, lbl_path, lbl_crc, lbl_id, lbl_fn, lbl_fw, lbl_title, lbl_gamever, lbl_fwver As String
 Dim checked, up As Boolean
 Dim param_sfo, crc_txt, tmp2, f, FSO
@@ -410,14 +410,15 @@ Public Function ShortPath(ByVal strFileName As String) As String
     ShortPath = Left$(strBuffer, lngReturnCode)
 End Function
 
-Public Function CheckFWVer(fwver)
-    If Mid(fwver, 1, 1) = "0" And Mid(fwver, 3, 1) = "." Then
-        CheckFWVer = True
+Public Function CheckVer(ver)
+    If Mid(ver, 1, 1) = "0" And Mid(ver, 3, 1) = "." Then
+        CheckVer = True
     Else
-        CheckFWVer = False
+        CheckVer = False
         'MsgBox "Error!"
     End If
 End Function
+
 Private Sub Command1_Click()
 'Select
 'On Error Resume Next
@@ -426,6 +427,8 @@ fn = ""
 fullpath = ""
 Shell ("cmd.exe /c del " & VB.App.path & "\tmp\PARAM.SFO"), vbHide
 Shell ("cmd.exe /c del " & VB.App.path & "\tmp\crc.txt"), vbHide
+Label7.ForeColor = &HFF&
+Label7.Caption = "Verified: NO"
 Sleep (250)
 Set FSO = CreateObject("Scripting.FileSystemObject")
 CommonDialog1.Filter = "Select ISO (*.iso)|*.iso|All files (*.*)|*.*"
@@ -461,85 +464,91 @@ If FSO.FileExists(fullpath) Then
         'Null bytes are ignored with this read method
         'Read PARAM.SFO into param_sfo variable
         Do
-            Input #1, tmp
+            Line Input #1, tmp
             param_sfo = param_sfo & tmp
         Loop Until EOF(1)
+        Close #1
         'Splits param_sfo into array after first 100 bytes
         'Uses Hex(01) as delimeter
-        tmp2 = Split(Mid(param_sfo, 100, Len(param_sfo)), Chr(1))
-        'Disc ID will now be at fixed position in array, The top of it.
-        id = Mid(tmp2(UBound(tmp2)), Len(tmp2(UBound(tmp2))) - 13, 9)
-        'FW Version will now be at fixed position in array, 2nd from top
-        'Unless smaller 'Install Disc' PARAM.SFO Then top of array
-        If Len(tmp2(1)) <= 2 Then
-            fwver = Mid(tmp2(UBound(tmp2)), 1, 5)
+        'BLUS30027 takes this path...
+        'This method doesn't ignore Null bytes. I strip them later.
+        If Len(param_sfo) <= 99 Then
+            param_sfo = cv_HexFromString(ReadFileIntoString(VB.App.path & "\tmp\PARAM.SFO"))
+            tmp = Replace(param_sfo, "00", "")
+            gamever = cv_StringFromHex(Mid(tmp, Len(tmp) - 9, 10))
+            If CheckVer(gamever) = False Then
+                MsgBox "Error: We don't know how to read that PARAM.SFO yet"
+                End
+            End If
+            id = cv_StringFromHex(Mid(tmp, Len(tmp) - 27, 19))
+            tmp2 = Split(cv_StringFromHex(Mid(tmp, 1, Len(tmp))), id)
+            For x = Len(tmp2(0)) To 1 Step -1
+                If Asc(Mid(tmp2(0), x, 1)) = "1" Then
+                    title = Mid(tmp2(0), x + 1, Len(tmp2(0)) - x + 1)
+                    x = 1
+                End If
+            Next x
+            tmp2 = Split(cv_StringFromHex(Mid(tmp, 1, Len(tmp))), title)
+            For x = Len(tmp2(0)) - 1 To 1 Step -1
+                If Asc(Mid(tmp2(0), x, 1)) = "5" Then
+                    fwver = Mid(tmp2(0), x + 1, 5)
+                    If CheckVer(fwver) = False Then
+                        MsgBox "Error: We don't know how to read that PARAM.SFO yet"
+                        End
+                    End If
+                    x = 1
+                End If
+            Next x
+            a = DoCRC()
+            a = UpdFrm()
+            'End
         Else
-            fwver = Mid(tmp2(UBound(tmp2) - 1), Len(tmp2(UBound(tmp2) - 1)) - 8, 5)
-            If CheckFWVer(fwver) = False Then
-                tmp2 = Split(tmp2(UBound(tmp2)), "user's license")
-                fwver = Mid(tmp2(UBound(tmp2)), 3, 5)
-                If CheckFWVer(fwver) = False Then
-                    MsgBox "Error: We don't know how to read that PARAM.SFO yet"
-                    End
+            tmp2 = Split(Mid(param_sfo, 100, Len(param_sfo)), Chr(1))
+            'Disc ID will now be at fixed position in array, The top of it.
+            id = Mid(tmp2(UBound(tmp2)), Len(tmp2(UBound(tmp2))) - 13, 9)
+            'FW Version will now be at fixed position in array, 2nd from top
+            'Unless smaller 'Install Disc' PARAM.SFO Then top of array
+            If Len(tmp2(1)) <= 2 Then
+                fwver = Mid(tmp2(UBound(tmp2)), 1, 5)
+            Else
+                fwver = Mid(tmp2(UBound(tmp2) - 1), Len(tmp2(UBound(tmp2) - 1)) - 8, 5)
+                If CheckVer(fwver) = False Then
+                    tmp2 = Split(tmp2(UBound(tmp2)), "user's license")
+                    fwver = Mid(tmp2(UBound(tmp2)), 3, 5)
+                    If CheckVer(fwver) = False Then
+                        MsgBox "Error: We don't know how to read that PARAM.SFO yet"
+                        End
+                    End If
                 End If
             End If
-        End If
-        'Now split param_sfo array again, using Disc ID as delimiter
-        tmp2 = Split(tmp2(UBound(tmp2)), id)
-        'Game Title/Version Exceptions:
-        'BLUS31385 'Install Disc' takes this path ...
-        If Mid(tmp2(0), 1, 1) = "0" And Mid(tmp2(0), 3, 1) = "." Then
-            gamever = tmp2(1)
-            tmp2 = Split(tmp2(0), "ã")
-            title = Mid(tmp2(0), 8, Len(tmp2(0)))
-        'BLUS30481 (Nier) takes this path, Not sure why yet.
-        ElseIf Mid(tmp2(0), 1, 1) = "." And Mid(tmp2(0), 3, 1) = "0" Then
-            gamever = tmp2(1)
-            tmp2 = Split(tmp2(0), Chr(3))
-            title = tmp2(1)
-        'Everything else so far takes this path
-        Else
-            'Game Title now at fixed position in array, Bottom of it. Usually...
-            title = tmp2(0)
-            'Game Version now at fixed position in array, Top of it
-            gamever = tmp2(1)
-        End If
-        
-        Close #1
-        Close #2
-        Set f = FSO.GetFile(VB.App.path & "\tmp\crc.txt")
-        up = True
-        z = 0
-        'Generating CRC can take time. We know ISO exist. If crc.txt doesn't must still be generating.
-        'Lets wait. Changes Form title with # 0 to 32767 and down ... then up and so on until crc.txt
-        'is generated.
-        While f.Size < 28
-        Do
-            If z < 32767 And up = True Then
-            z = z + 1
+            'Now split param_sfo array again, using Disc ID as delimiter
+            tmp2 = Split(tmp2(UBound(tmp2)), id)
+            'Game Title/Version Exceptions:
+            'BLUS31385 'Install Disc' takes this path ...
+            If Mid(tmp2(0), 1, 1) = "0" And Mid(tmp2(0), 3, 1) = "." Then
+                gamever = tmp2(1)
+                tmp2 = Split(tmp2(0), "ã")
+                title = Mid(tmp2(0), 8, Len(tmp2(0)))
+            'BLUS30481 (Nier) takes this path, Not sure why yet.
+            ElseIf Mid(tmp2(0), 1, 1) = "." And Mid(tmp2(0), 3, 1) = "0" Then
+                gamever = tmp2(1)
+                tmp2 = Split(tmp2(0), Chr(3))
+                title = tmp2(1)
+            'Everything else so far takes this path
             Else
-            up = False
-            z = z - 1
-            If z = -32767 Then up = True
+                'Game Title now at fixed position in array, Bottom of it. Usually...
+                title = tmp2(0)
+                'Game Version now at fixed position in array, Top of it
+                gamever = tmp2(1)
             End If
-            Form1.Caption = "PS3SFV ISO Tool v" & Build & " (www.VTS-Tech.org)(Working: " & z & ")"
-        Loop Until f.Size > 128
-        Wend
-        Form1.Caption = "PS3SFV ISO Tool v" & Build & " (www.VTS-Tech.org)"
-        Sleep (2000)
-        'crc.txt should be done now.
-        Open VB.App.path & "\tmp\crc.txt" For Input As #2
-        Do
-            Input #2, tmp
-            crc_txt = crc_txt & tmp
-        Loop Until EOF(2)
-        tmp2 = Mid(crc_txt, Len(crc_txt) - 23)
-        CRC = Mid(tmp2, 1, 8)
-        'MsgBox CRC
-        Close #2
-        a = UpdFrm()
-        Shell ("cmd.exe /c del " & VB.App.path & "\tmp\PARAM.SFO"), vbHide
-        Shell ("cmd.exe /c del " & VB.App.path & "\tmp\crc.txt"), vbHide
+            
+            Close #1
+            Close #2
+            a = DoCRC()
+            a = UpdFrm()
+            Shell ("cmd.exe /c del " & VB.App.path & "\tmp\PARAM.SFO"), vbHide
+            Shell ("cmd.exe /c del " & VB.App.path & "\tmp\crc.txt"), vbHide
+        End If
     Else
         MsgBox "Error: PARAM.SFO not found on ISO. Not a PS3 ISO?"
     End If
@@ -548,6 +557,40 @@ Else
 End If
 
 End Sub
+Public Function DoCRC()
+Set f = FSO.GetFile(VB.App.path & "\tmp\crc.txt")
+up = True
+z = 0
+'Generating CRC can take time. We know ISO exist. If crc.txt doesn't must still be generating.
+'Lets wait. Changes Form title with # 0 to 32767 and down ... then up and so on until crc.txt
+'is generated.
+While f.Size < 28
+Do
+    If z < 32767 And up = True Then
+    z = z + 1
+    Else
+    up = False
+    z = z - 1
+    If z = -32767 Then up = True
+    End If
+    Form1.Caption = "PS3SFV ISO Tool v" & Build & " (www.VTS-Tech.org)(Working: " & z & ")"
+Loop Until f.Size > 128
+Wend
+Form1.Caption = "PS3SFV ISO Tool v" & Build & " (www.VTS-Tech.org)"
+Sleep (2000)
+'crc.txt should be done now.
+crc_txt = ""
+Open VB.App.path & "\tmp\crc.txt" For Input As #2
+Do
+    Input #2, tmp
+    crc_txt = crc_txt & tmp
+Loop Until EOF(2)
+tmp2 = Mid(crc_txt, Len(crc_txt) - 23)
+CRC = Mid(tmp2, 1, 8)
+'MsgBox CRC
+Close #2
+
+End Function
 Public Function UpdFrm()
 Set FSO = CreateObject("Scripting.FileSystemObject")
 lbl_path = path
@@ -570,7 +613,6 @@ If FSO.FileExists(VB.App.path & "\SFV\" & id & "-IMAGE.SFV") Then
 Else
     Label12.ForeColor = &HFF&
     Label12.Caption = "Data Avail: NO"
-    
 End If
 lbl_id = ""
 lbl_crc = ""
@@ -656,7 +698,7 @@ End Sub
 
 Private Sub Form_Load()
 'Set FSO = CreateObject("Scripting.FileSystemObject")
-Build = "0.1-alpha3"
+Build = "0.1-alpha4"
 checked = False
 tmp = ""
 Form1.Caption = "PS3SFV ISO Tool v" & Build & " (www.VTS-Tech.org)"
