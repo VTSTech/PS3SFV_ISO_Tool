@@ -410,6 +410,14 @@ Public Function ShortPath(ByVal strFileName As String) As String
     ShortPath = Left$(strBuffer, lngReturnCode)
 End Function
 
+Public Function CheckFWVer(fwver)
+    If Mid(fwver, 1, 1) = "0" And Mid(fwver, 3, 1) = "." Then
+        CheckFWVer = True
+    Else
+        CheckFWVer = False
+        'MsgBox "Error!"
+    End If
+End Function
 Private Sub Command1_Click()
 'Select
 'On Error Resume Next
@@ -433,7 +441,7 @@ If FSO.FileExists(fullpath) Then
         path = path & tmp(x) & "\"
     Next x
     'Extract PARAM.SFO from seelcted ISO using 7-Zip
-    Shell (VB.App.path & "\bin\7z\7z e -y -r -o" & VB.App.path & "\tmp\ " & fullpath & " PARAM.SFO"), vbHide
+    Shell (VB.App.path & "\bin\7z\7z e -y -o" & VB.App.path & "\tmp\ " & fullpath & " PS3_GAME\PARAM.SFO"), vbHide
     Sleep (500)
     'Begin calculate of CRC32 using 7-Zip
     Shell ("cmd.exe /c " & Chr(34) & VB.App.path & "\bin\7z\7z h " & fullpath & Chr(34) & " >> " & VB.App.path & "\tmp\crc.txt"), vbHide
@@ -462,13 +470,41 @@ If FSO.FileExists(fullpath) Then
         'Disc ID will now be at fixed position in array, The top of it.
         id = Mid(tmp2(UBound(tmp2)), Len(tmp2(UBound(tmp2))) - 13, 9)
         'FW Version will now be at fixed position in array, 2nd from top
-        fwver = Mid(tmp2(1), Len(tmp2(1)) - 8, 5)
+        'Unless smaller 'Install Disc' PARAM.SFO Then top of array
+        If Len(tmp2(1)) <= 2 Then
+            fwver = Mid(tmp2(UBound(tmp2)), 1, 5)
+        Else
+            fwver = Mid(tmp2(UBound(tmp2) - 1), Len(tmp2(UBound(tmp2) - 1)) - 8, 5)
+            If CheckFWVer(fwver) = False Then
+                tmp2 = Split(tmp2(UBound(tmp2)), "user's license")
+                fwver = Mid(tmp2(UBound(tmp2)), 3, 5)
+                If CheckFWVer(fwver) = False Then
+                    MsgBox "Error: We don't know how to read that PARAM.SFO yet"
+                    End
+                End If
+            End If
+        End If
         'Now split param_sfo array again, using Disc ID as delimiter
         tmp2 = Split(tmp2(UBound(tmp2)), id)
-        'Game Title now at fixed position in array, Bottom of it.
-        title = tmp2(0)
-        'Game Version now at fixed position in array, Top of it
-        gamever = tmp2(1)
+        'Game Title/Version Exceptions:
+        'BLUS31385 'Install Disc' takes this path ...
+        If Mid(tmp2(0), 1, 1) = "0" And Mid(tmp2(0), 3, 1) = "." Then
+            gamever = tmp2(1)
+            tmp2 = Split(tmp2(0), "ã")
+            title = Mid(tmp2(0), 8, Len(tmp2(0)))
+        'BLUS30481 (Nier) takes this path, Not sure why yet.
+        ElseIf Mid(tmp2(0), 1, 1) = "." And Mid(tmp2(0), 3, 1) = "0" Then
+            gamever = tmp2(1)
+            tmp2 = Split(tmp2(0), Chr(3))
+            title = tmp2(1)
+        'Everything else so far takes this path
+        Else
+            'Game Title now at fixed position in array, Bottom of it. Usually...
+            title = tmp2(0)
+            'Game Version now at fixed position in array, Top of it
+            gamever = tmp2(1)
+        End If
+        
         Close #1
         Close #2
         Set f = FSO.GetFile(VB.App.path & "\tmp\crc.txt")
@@ -620,7 +656,7 @@ End Sub
 
 Private Sub Form_Load()
 'Set FSO = CreateObject("Scripting.FileSystemObject")
-Build = "0.1-alpha2"
+Build = "0.1-alpha3"
 checked = False
 tmp = ""
 Form1.Caption = "PS3SFV ISO Tool v" & Build & " (www.VTS-Tech.org)"
