@@ -12,14 +12,11 @@ Select ISO to fill out fields.
 Click 'Data Avail: NO' to save Verification Data.
 Click Verify to use available Verification Data against selected ISO</pre>
 
-<pre>
-Current thinking is have two SFV files per Disc ID
-One for entire unencrypted image CRC32
-Another for 'Disc Contents' individual file SFV for determining incorrect/modified files.
 
-SFV Files can support comments with ; prefix
-Can use fields there to store 'Game Title', 'FW Version' and a few other things
-</pre>
+SFV Submissions? E-mail: veritas [at] vts-tech.org, 100% original only please.
+
+PARAM.SFO/EBOOT.BIN/PS3UPDAT.PUP must be exactly as they are on disc - Only Generated SFV from this program)
+
 
 Example SFV
 
