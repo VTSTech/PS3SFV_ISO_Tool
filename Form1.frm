@@ -4,19 +4,19 @@ Begin VB.Form Form1
    BackColor       =   &H00808080&
    BorderStyle     =   1  'Fixed Single
    Caption         =   "PS3SFV ISO Tool v0.1 by VTSTech (www.VTS-Tech.org)"
-   ClientHeight    =   2250
+   ClientHeight    =   2130
    ClientLeft      =   45
    ClientTop       =   390
    ClientWidth     =   6270
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   2250
+   ScaleHeight     =   2130
    ScaleWidth      =   6270
    StartUpPosition =   3  'Windows Default
    Begin MSComDlg.CommonDialog CommonDialog1 
       Left            =   4320
-      Top             =   1800
+      Top             =   1680
       _ExtentX        =   847
       _ExtentY        =   847
       _Version        =   393216
@@ -35,7 +35,7 @@ Begin VB.Form Form1
       Height          =   375
       Left            =   5280
       TabIndex        =   1
-      Top             =   960
+      Top             =   720
       Width           =   735
    End
    Begin VB.CommandButton Command1 
@@ -44,7 +44,7 @@ Begin VB.Form Form1
       Height          =   375
       Left            =   4440
       TabIndex        =   0
-      Top             =   960
+      Top             =   720
       Width           =   735
    End
    Begin VB.Frame Frame1 
@@ -53,15 +53,28 @@ Begin VB.Form Form1
       Height          =   735
       Left            =   4320
       TabIndex        =   3
-      Top             =   720
+      Top             =   480
       Width           =   1815
    End
-   Begin VB.Image Image1 
-      Height          =   705
-      Left            =   120
-      Stretch         =   -1  'True
+   Begin VB.Label Label17 
+      AutoSize        =   -1  'True
+      BackColor       =   &H00808080&
+      Caption         =   "FILES CRC32: NO"
+      BeginProperty Font 
+         Name            =   "Arial"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H000000FF&
+      Height          =   210
+      Left            =   4815
+      TabIndex        =   19
       Top             =   1440
-      Width           =   1275
+      Width           =   1320
    End
    Begin VB.Label Label16 
       AutoSize        =   -1  'True
@@ -79,8 +92,8 @@ Begin VB.Form Form1
       ForeColor       =   &H00FFFF00&
       Height          =   210
       Left            =   3000
-      TabIndex        =   19
-      Top             =   960
+      TabIndex        =   18
+      Top             =   720
       Width           =   405
    End
    Begin VB.Label Label15 
@@ -96,11 +109,11 @@ Begin VB.Form Form1
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H00FFFF00&
+      ForeColor       =   &H00C0C000&
       Height          =   210
       Left            =   2040
-      TabIndex        =   18
-      Top             =   960
+      TabIndex        =   17
+      Top             =   720
       Width           =   600
    End
    Begin VB.Label Label14 
@@ -116,11 +129,11 @@ Begin VB.Form Form1
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H00FFFF00&
+      ForeColor       =   &H00C0C000&
       Height          =   210
       Left            =   2040
-      TabIndex        =   17
-      Top             =   1200
+      TabIndex        =   16
+      Top             =   960
       Width           =   780
    End
    Begin VB.Label Label13 
@@ -139,14 +152,14 @@ Begin VB.Form Form1
       ForeColor       =   &H00FFFF00&
       Height          =   210
       Left            =   3000
-      TabIndex        =   16
-      Top             =   1200
+      TabIndex        =   15
+      Top             =   960
       Width           =   405
    End
    Begin VB.Label Label12 
       AutoSize        =   -1  'True
       BackColor       =   &H00808080&
-      Caption         =   "Data Avail: NO"
+      Caption         =   "ISO CRC32: NO"
       BeginProperty Font 
          Name            =   "Arial"
          Size            =   8.25
@@ -158,10 +171,10 @@ Begin VB.Form Form1
       EndProperty
       ForeColor       =   &H000000FF&
       Height          =   210
-      Left            =   5040
-      TabIndex        =   15
-      Top             =   1800
-      Width           =   1095
+      Left            =   4980
+      TabIndex        =   14
+      Top             =   1680
+      Width           =   1155
    End
    Begin VB.Label Label11 
       AutoSize        =   -1  'True
@@ -171,17 +184,17 @@ Begin VB.Form Form1
          Name            =   "Arial"
          Size            =   8.25
          Charset         =   0
-         Weight          =   700
+         Weight          =   400
          Underline       =   0   'False
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
       ForeColor       =   &H00FFFF00&
       Height          =   210
-      Left            =   480
-      TabIndex        =   14
-      Top             =   480
-      Width           =   210
+      Left            =   120
+      TabIndex        =   13
+      Top             =   1200
+      Width           =   195
    End
    Begin VB.Label Label10 
       AutoSize        =   -1  'True
@@ -199,8 +212,8 @@ Begin VB.Form Form1
       ForeColor       =   &H00FFFF00&
       Height          =   210
       Left            =   1080
-      TabIndex        =   13
-      Top             =   720
+      TabIndex        =   12
+      Top             =   480
       Width           =   870
    End
    Begin VB.Label Label9 
@@ -219,8 +232,8 @@ Begin VB.Form Form1
       ForeColor       =   &H00FFFF00&
       Height          =   210
       Left            =   1080
-      TabIndex        =   12
-      Top             =   960
+      TabIndex        =   11
+      Top             =   720
       Width           =   870
    End
    Begin VB.Label Label8 
@@ -239,8 +252,8 @@ Begin VB.Form Form1
       ForeColor       =   &H00FFFF00&
       Height          =   210
       Left            =   1080
-      TabIndex        =   11
-      Top             =   1200
+      TabIndex        =   10
+      Top             =   960
       Width           =   720
    End
    Begin VB.Label Label7 
@@ -259,29 +272,9 @@ Begin VB.Form Form1
       ForeColor       =   &H000000FF&
       Height          =   210
       Left            =   5160
-      TabIndex        =   10
-      Top             =   2040
-      Width           =   975
-   End
-   Begin VB.Label Label6 
-      AutoSize        =   -1  'True
-      BackColor       =   &H00808080&
-      Caption         =   "C:\"
-      BeginProperty Font 
-         Name            =   "Arial"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   400
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H00FFFF00&
-      Height          =   210
-      Left            =   120
       TabIndex        =   9
-      Top             =   480
-      Width           =   195
+      Top             =   1920
+      Width           =   975
    End
    Begin VB.Label Label5 
       AutoSize        =   -1  'True
@@ -291,17 +284,17 @@ Begin VB.Form Form1
          Name            =   "Arial"
          Size            =   8.25
          Charset         =   0
-         Weight          =   400
+         Weight          =   700
          Underline       =   0   'False
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H00FFFF00&
+      ForeColor       =   &H0000C0C0&
       Height          =   210
-      Left            =   2160
+      Left            =   2010
       TabIndex        =   8
-      Top             =   2040
-      Width           =   1965
+      Top             =   1920
+      Width           =   2250
    End
    Begin VB.Label Label4 
       AutoSize        =   -1  'True
@@ -311,17 +304,17 @@ Begin VB.Form Form1
          Name            =   "Arial"
          Size            =   8.25
          Charset         =   0
-         Weight          =   400
+         Weight          =   700
          Underline       =   0   'False
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H00FFFF00&
+      ForeColor       =   &H0000C0C0&
       Height          =   210
-      Left            =   2415
+      Left            =   2325
       TabIndex        =   7
-      Top             =   1800
-      Width           =   1455
+      Top             =   1680
+      Width           =   1620
    End
    Begin VB.Label Label3 
       AutoSize        =   -1  'True
@@ -336,11 +329,11 @@ Begin VB.Form Form1
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H00FFFF00&
+      ForeColor       =   &H00C0C000&
       Height          =   210
       Left            =   120
       TabIndex        =   6
-      Top             =   1200
+      Top             =   960
       Width           =   495
    End
    Begin VB.Label Label2 
@@ -356,11 +349,11 @@ Begin VB.Form Form1
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H00FFFF00&
+      ForeColor       =   &H00C0C000&
       Height          =   210
       Left            =   120
       TabIndex        =   5
-      Top             =   960
+      Top             =   720
       Width           =   570
    End
    Begin VB.Label Label1 
@@ -376,11 +369,11 @@ Begin VB.Form Form1
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H00FFFF00&
+      ForeColor       =   &H00C0C000&
       Height          =   210
       Left            =   120
       TabIndex        =   4
-      Top             =   720
+      Top             =   480
       Width           =   930
    End
 End
@@ -400,22 +393,6 @@ Private Declare Function GetShortPathName Lib "kernel32" _
    ByVal lpszShortPath As String, ByVal cchBuffer As Long) _
    As Long
 Private Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
-Public Function ShortPath(ByVal strFileName As String) As String
-    Dim strBuffer As String * 255
-    Dim lngReturnCode As Long
-    
-    'FILENAME MUST EXIST FOR API FUNCTION TO WORK
-    'SO CREATE THE FILE IF IT DOESN'T EXISTS
-    Dim iFileNumber As Integer
-    iFileNumber = FreeFile
-    If Dir(strFileName) = "" Then
-        On Error Resume Next
-        Open strFileName For Output As #iFileNumber
-        Close #iFileNumber
-    End If
-    lngReturnCode = GetShortPathName(strFileName, strBuffer, 255)
-    ShortPath = Left$(strBuffer, lngReturnCode)
-End Function
 
 Public Function CheckVer(ver)
     If Mid(ver, 1, 1) = "0" And Mid(ver, 3, 1) = "." Then
@@ -449,12 +426,22 @@ For x = 1 To Len(tmp2)
             If Mid(tmp2, z, 6) = "30322E" Or Mid(tmp2, z, 6) = "30332E" Or Mid(tmp2, z, 6) = "30342E" Then
                 fwver = cv_StringFromHex(Mid(tmp2, z, 10))
             End If
+            If Mid(tmp2, z, 6) = "30312E" Then
+                For a = 2 To 9
+                    If Mid(tmp2, z, 8) = "30312E" & cv_HexFromString(Val(a)) Then
+                        fwver = cv_StringFromHex(Mid(tmp2, z, 10))
+                    End If
+                Next a
+            End If
         Next z
     End If
 Next x
 
-'Text1.Text = Text1.Text & "Game Name: " & title & vbCrLf & "Game Version: " & gamever & vbCrLf & "Disc ID: " & id & vbCrLf
-'Text1.Text = Text1.Text & vbCrLf & tmp2 & vbCrLf
+If CheckVer(gamever) = False Or CheckVer(fwver) = False Then
+    MsgBox "Error: We don't know how to read that PARAM.SFO yet"
+End If
+
+
 End Function
 Private Sub Command1_Click()
 'Select
@@ -490,10 +477,6 @@ If FSO.FileExists(fullpath) Then
     If FSO.FileExists(VB.App.path & "\tmp\PARAM.SFO") Then
         param_sfo = cv_HexFromString(ReadFileIntoString(VB.App.path & "\tmp\PARAM.SFO"))
         a = ParseSFO(param_sfo)
-        If CheckVer(gamever) = False Then
-            MsgBox "Error: We don't know how to read that PARAM.SFO yet"
-            End
-        End If
         a = DoCRC()
         a = UpdFrm()
     Else
@@ -554,13 +537,23 @@ Label8.Caption = lbl_crc
 Label13.Caption = lbl_gamever
 Label16.Caption = lbl_fwver
 Text1.Text = lbl_fn
+
 If FSO.FileExists(VB.App.path & "\SFV\" & id & "-IMAGE.SFV") Then
     Label12.ForeColor = &HFF00&
-    Label12.Caption = "Data Avail: YES"
+    Label12.Caption = "ISO CRC32: YES"
 Else
     Label12.ForeColor = &HFF&
-    Label12.Caption = "Data Avail: NO"
+    Label12.Caption = "ISO CRC32: NO"
 End If
+
+If FSO.FileExists(VB.App.path & "\SFV\" & id & "-CONTENTS.SFV") Then
+    Label17.ForeColor = &HFF00&
+    Label17.Caption = "FILES CRC32: YES"
+Else
+    Label17.ForeColor = &HFF&
+    Label17.Caption = "FILES CRC32: NO"
+End If
+
 lbl_id = ""
 lbl_crc = ""
 lbl_title = ""
@@ -645,12 +638,12 @@ End Sub
 
 Private Sub Form_Load()
 'Set FSO = CreateObject("Scripting.FileSystemObject")
-Build = "0.1-alpha6"
+Build = "0.1-beta1"
 checked = False
 tmp = ""
 Form1.Caption = "PS3SFV ISO Tool v" & Build & " (www.VTS-Tech.org)"
 Label1.Caption = "Game Title: "
-Label6.Caption = "Path: "
+'Label6.Caption = "Path: "
 Label2.Caption = "Disc ID: "
 Label3.Caption = "ISO CRC32: "
 Label14.Caption = "Game Ver: "
