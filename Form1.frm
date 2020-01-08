@@ -418,7 +418,37 @@ Public Function CheckVer(ver)
         'MsgBox "Error!"
     End If
 End Function
+Public Function ParseSFO(param_sfo)
+'param_sfo = cv_HexFromString(ReadFileIntoString(VB.App.Path & "\tmp\SKY.SFO"))
+id = ""
+title = ""
+gamever = ""
+tmp = ""
+tmp2 = ""
+tmp = Split(param_sfo, "5449544C455F49440056455253494F4E")
+gamever = cv_StringFromHex(Mid(tmp(1), Len(tmp(1)) - 15, 10))
+id = cv_StringFromHex(Mid(tmp(1), Len(tmp(1)) - 47, 18))
+tmp2 = Replace(tmp(1), "00", "")
 
+For x = 1 To Len(tmp2)
+    If Mid(tmp2, x, 4) = "0701" Or Mid(tmp2, x, 4) = "0703" Or Mid(tmp2, x, 4) = "1701" Or Mid(tmp2, x, 4) = "1703" Then
+        For y = x To Len(tmp2)
+            If Mid(tmp2, y, 8) = "424C4553" Or Mid(tmp2, y, 8) = "424C5553" Then
+            title = cv_StringFromHex(Mid(tmp2, x + 4, y - x - 3))
+            'MsgBox Title
+            End If
+        Next y
+        For z = x To 1 Step -1
+            If Mid(tmp2, z, 6) = "30322E" Or Mid(tmp2, z, 6) = "30332E" Or Mid(tmp2, z, 6) = "30342E" Then
+                fwver = cv_StringFromHex(Mid(tmp2, z, 10))
+            End If
+        Next z
+    End If
+Next x
+
+'Text1.Text = Text1.Text & "Game Name: " & title & vbCrLf & "Game Version: " & gamever & vbCrLf & "Disc ID: " & id & vbCrLf
+'Text1.Text = Text1.Text & vbCrLf & tmp2 & vbCrLf
+End Function
 Private Sub Command1_Click()
 'Select
 'On Error Resume Next
@@ -435,7 +465,7 @@ CommonDialog1.Filter = "Select ISO (*.iso)|*.iso|All files (*.*)|*.*"
 CommonDialog1.DefaultExt = "iso"
 CommonDialog1.DialogTitle = "Select File"
 CommonDialog1.ShowOpen
-fullpath = CommonDialog1.Filename
+fullpath = CommonDialog1.FileName
 
 If FSO.FileExists(fullpath) Then
     tmp = Split(fullpath, "\")
@@ -451,104 +481,14 @@ If FSO.FileExists(fullpath) Then
     Sleep (2500)
     'PARAM.SFO should be extracted now...
     If FSO.FileExists(VB.App.path & "\tmp\PARAM.SFO") Then
-        'MsgBox ("We Good")
-        id = ""
-        CRC = ""
-        title = ""
-        param_sfo = ""
-        crc_txt = ""
-        tmp = ""
-        tmp2 = ""
-        Close #1
-        Open VB.App.path & "\tmp\PARAM.SFO" For Input As #1
-        'Null bytes are ignored with this read method
-        'Read PARAM.SFO into param_sfo variable
-        Do
-            Line Input #1, tmp
-            param_sfo = param_sfo & tmp
-        Loop Until EOF(1)
-        Close #1
-        'Splits param_sfo into array after first 100 bytes
-        'Uses Hex(01) as delimeter
-        'BLUS30027 takes this path...
-        'This method doesn't ignore Null bytes. I strip them later.
-        If Len(param_sfo) <= 99 Then
-            param_sfo = cv_HexFromString(ReadFileIntoString(VB.App.path & "\tmp\PARAM.SFO"))
-            tmp = Replace(param_sfo, "00", "")
-            gamever = cv_StringFromHex(Mid(tmp, Len(tmp) - 9, 10))
-            If CheckVer(gamever) = False Then
-                MsgBox "Error: We don't know how to read that PARAM.SFO yet"
-                End
-            End If
-            id = cv_StringFromHex(Mid(tmp, Len(tmp) - 27, 19))
-            tmp2 = Split(cv_StringFromHex(Mid(tmp, 1, Len(tmp))), id)
-            For x = Len(tmp2(0)) To 1 Step -1
-                If Asc(Mid(tmp2(0), x, 1)) = "1" Then
-                    title = Mid(tmp2(0), x + 1, Len(tmp2(0)) - x + 1)
-                    x = 1
-                End If
-            Next x
-            tmp2 = Split(cv_StringFromHex(Mid(tmp, 1, Len(tmp))), title)
-            For x = Len(tmp2(0)) - 1 To 1 Step -1
-                If Asc(Mid(tmp2(0), x, 1)) = "5" Then
-                    fwver = Mid(tmp2(0), x + 1, 5)
-                    If CheckVer(fwver) = False Then
-                        MsgBox "Error: We don't know how to read that PARAM.SFO yet"
-                        End
-                    End If
-                    x = 1
-                End If
-            Next x
-            a = DoCRC()
-            a = UpdFrm()
-            'End
-        Else
-            tmp2 = Split(Mid(param_sfo, 100, Len(param_sfo)), Chr(1))
-            'Disc ID will now be at fixed position in array, The top of it.
-            id = Mid(tmp2(UBound(tmp2)), Len(tmp2(UBound(tmp2))) - 13, 9)
-            'FW Version will now be at fixed position in array, 2nd from top
-            'Unless smaller 'Install Disc' PARAM.SFO Then top of array
-            If Len(tmp2(1)) <= 2 Then
-                fwver = Mid(tmp2(UBound(tmp2)), 1, 5)
-            Else
-                fwver = Mid(tmp2(UBound(tmp2) - 1), Len(tmp2(UBound(tmp2) - 1)) - 8, 5)
-                If CheckVer(fwver) = False Then
-                    tmp2 = Split(tmp2(UBound(tmp2)), "user's license")
-                    fwver = Mid(tmp2(UBound(tmp2)), 3, 5)
-                    If CheckVer(fwver) = False Then
-                        MsgBox "Error: We don't know how to read that PARAM.SFO yet"
-                        End
-                    End If
-                End If
-            End If
-            'Now split param_sfo array again, using Disc ID as delimiter
-            tmp2 = Split(tmp2(UBound(tmp2)), id)
-            'Game Title/Version Exceptions:
-            'BLUS31385 'Install Disc' takes this path ...
-            If Mid(tmp2(0), 1, 1) = "0" And Mid(tmp2(0), 3, 1) = "." Then
-                gamever = tmp2(1)
-                tmp2 = Split(tmp2(0), "ã")
-                title = Mid(tmp2(0), 8, Len(tmp2(0)))
-            'BLUS30481 (Nier) takes this path, Not sure why yet.
-            ElseIf Mid(tmp2(0), 1, 1) = "." And Mid(tmp2(0), 3, 1) = "0" Then
-                gamever = tmp2(1)
-                tmp2 = Split(tmp2(0), Chr(3))
-                title = tmp2(1)
-            'Everything else so far takes this path
-            Else
-                'Game Title now at fixed position in array, Bottom of it. Usually...
-                title = tmp2(0)
-                'Game Version now at fixed position in array, Top of it
-                gamever = tmp2(1)
-            End If
-            
-            Close #1
-            Close #2
-            a = DoCRC()
-            a = UpdFrm()
-            Shell ("cmd.exe /c del " & VB.App.path & "\tmp\PARAM.SFO"), vbHide
-            Shell ("cmd.exe /c del " & VB.App.path & "\tmp\crc.txt"), vbHide
+        param_sfo = cv_HexFromString(ReadFileIntoString(VB.App.path & "\tmp\PARAM.SFO"))
+        a = ParseSFO(param_sfo)
+        If CheckVer(gamever) = False Then
+            MsgBox "Error: We don't know how to read that PARAM.SFO yet"
+            End
         End If
+        a = DoCRC()
+        a = UpdFrm()
     Else
         MsgBox "Error: PARAM.SFO not found on ISO. Not a PS3 ISO?"
     End If
@@ -698,7 +638,7 @@ End Sub
 
 Private Sub Form_Load()
 'Set FSO = CreateObject("Scripting.FileSystemObject")
-Build = "0.1-alpha4"
+Build = "0.1-alpha5"
 checked = False
 tmp = ""
 Form1.Caption = "PS3SFV ISO Tool v" & Build & " (www.VTS-Tech.org)"
