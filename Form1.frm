@@ -4,19 +4,19 @@ Begin VB.Form Form1
    BackColor       =   &H00808080&
    BorderStyle     =   1  'Fixed Single
    Caption         =   "PS3SFV ISO Tool v0.1 by VTSTech (www.VTS-Tech.org)"
-   ClientHeight    =   1905
+   ClientHeight    =   2250
    ClientLeft      =   45
    ClientTop       =   390
    ClientWidth     =   6270
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   1905
+   ScaleHeight     =   2250
    ScaleWidth      =   6270
    StartUpPosition =   3  'Windows Default
    Begin MSComDlg.CommonDialog CommonDialog1 
-      Left            =   5640
-      Top             =   1320
+      Left            =   4320
+      Top             =   1800
       _ExtentX        =   847
       _ExtentY        =   847
       _Version        =   393216
@@ -26,7 +26,7 @@ Begin VB.Form Form1
       Left            =   120
       TabIndex        =   2
       Text            =   "C:\TEMP\Filename_BLUS00000_USA_PS3iSO-VTSTech.iso"
-      Top             =   240
+      Top             =   120
       Width           =   6015
    End
    Begin VB.CommandButton Command2 
@@ -35,7 +35,7 @@ Begin VB.Form Form1
       Height          =   375
       Left            =   5280
       TabIndex        =   1
-      Top             =   840
+      Top             =   960
       Width           =   735
    End
    Begin VB.CommandButton Command1 
@@ -44,7 +44,7 @@ Begin VB.Form Form1
       Height          =   375
       Left            =   4440
       TabIndex        =   0
-      Top             =   840
+      Top             =   960
       Width           =   735
    End
    Begin VB.Frame Frame1 
@@ -53,8 +53,15 @@ Begin VB.Form Form1
       Height          =   735
       Left            =   4320
       TabIndex        =   3
-      Top             =   600
+      Top             =   720
       Width           =   1815
+   End
+   Begin VB.Image Image1 
+      Height          =   705
+      Left            =   120
+      Stretch         =   -1  'True
+      Top             =   1440
+      Width           =   1275
    End
    Begin VB.Label Label16 
       AutoSize        =   -1  'True
@@ -73,7 +80,7 @@ Begin VB.Form Form1
       Height          =   210
       Left            =   3000
       TabIndex        =   19
-      Top             =   840
+      Top             =   960
       Width           =   405
    End
    Begin VB.Label Label15 
@@ -93,7 +100,7 @@ Begin VB.Form Form1
       Height          =   210
       Left            =   2040
       TabIndex        =   18
-      Top             =   840
+      Top             =   960
       Width           =   600
    End
    Begin VB.Label Label14 
@@ -113,7 +120,7 @@ Begin VB.Form Form1
       Height          =   210
       Left            =   2040
       TabIndex        =   17
-      Top             =   1080
+      Top             =   1200
       Width           =   780
    End
    Begin VB.Label Label13 
@@ -133,7 +140,7 @@ Begin VB.Form Form1
       Height          =   210
       Left            =   3000
       TabIndex        =   16
-      Top             =   1080
+      Top             =   1200
       Width           =   405
    End
    Begin VB.Label Label12 
@@ -153,7 +160,7 @@ Begin VB.Form Form1
       Height          =   210
       Left            =   5040
       TabIndex        =   15
-      Top             =   1440
+      Top             =   1800
       Width           =   1095
    End
    Begin VB.Label Label11 
@@ -171,9 +178,9 @@ Begin VB.Form Form1
       EndProperty
       ForeColor       =   &H00FFFF00&
       Height          =   210
-      Left            =   600
+      Left            =   480
       TabIndex        =   14
-      Top             =   0
+      Top             =   480
       Width           =   210
    End
    Begin VB.Label Label10 
@@ -193,7 +200,7 @@ Begin VB.Form Form1
       Height          =   210
       Left            =   1080
       TabIndex        =   13
-      Top             =   600
+      Top             =   720
       Width           =   870
    End
    Begin VB.Label Label9 
@@ -213,7 +220,7 @@ Begin VB.Form Form1
       Height          =   210
       Left            =   1080
       TabIndex        =   12
-      Top             =   840
+      Top             =   960
       Width           =   870
    End
    Begin VB.Label Label8 
@@ -233,7 +240,7 @@ Begin VB.Form Form1
       Height          =   210
       Left            =   1080
       TabIndex        =   11
-      Top             =   1080
+      Top             =   1200
       Width           =   720
    End
    Begin VB.Label Label7 
@@ -253,7 +260,7 @@ Begin VB.Form Form1
       Height          =   210
       Left            =   5160
       TabIndex        =   10
-      Top             =   1680
+      Top             =   2040
       Width           =   975
    End
    Begin VB.Label Label6 
@@ -273,7 +280,7 @@ Begin VB.Form Form1
       Height          =   210
       Left            =   120
       TabIndex        =   9
-      Top             =   0
+      Top             =   480
       Width           =   195
    End
    Begin VB.Label Label5 
@@ -291,9 +298,9 @@ Begin VB.Form Form1
       EndProperty
       ForeColor       =   &H00FFFF00&
       Height          =   210
-      Left            =   2153
+      Left            =   2160
       TabIndex        =   8
-      Top             =   1680
+      Top             =   2040
       Width           =   1965
    End
    Begin VB.Label Label4 
@@ -311,9 +318,9 @@ Begin VB.Form Form1
       EndProperty
       ForeColor       =   &H00FFFF00&
       Height          =   210
-      Left            =   2408
+      Left            =   2415
       TabIndex        =   7
-      Top             =   1440
+      Top             =   1800
       Width           =   1455
    End
    Begin VB.Label Label3 
@@ -333,7 +340,7 @@ Begin VB.Form Form1
       Height          =   210
       Left            =   120
       TabIndex        =   6
-      Top             =   1080
+      Top             =   1200
       Width           =   495
    End
    Begin VB.Label Label2 
@@ -353,7 +360,7 @@ Begin VB.Form Form1
       Height          =   210
       Left            =   120
       TabIndex        =   5
-      Top             =   840
+      Top             =   960
       Width           =   570
    End
    Begin VB.Label Label1 
@@ -373,7 +380,7 @@ Begin VB.Form Form1
       Height          =   210
       Left            =   120
       TabIndex        =   4
-      Top             =   600
+      Top             =   720
       Width           =   930
    End
 End
@@ -431,9 +438,9 @@ id = cv_StringFromHex(Mid(tmp(1), Len(tmp(1)) - 47, 18))
 tmp2 = Replace(tmp(1), "00", "")
 
 For x = 1 To Len(tmp2)
-    If Mid(tmp2, x, 4) = "0701" Or Mid(tmp2, x, 4) = "0703" Or Mid(tmp2, x, 4) = "1701" Or Mid(tmp2, x, 4) = "1703" Then
+    If Mid(tmp2, x, 4) = "0701" Or Mid(tmp2, x, 4) = "0703" Or Mid(tmp2, x, 4) = "1701" Or Mid(tmp2, x, 4) = "1703" Or Mid(tmp2, x, 4) = "1515" Then
         For y = x To Len(tmp2)
-            If Mid(tmp2, y, 8) = "424C4553" Or Mid(tmp2, y, 8) = "424C5553" Then
+            If Mid(tmp2, y, 8) = "424C4553" Or Mid(tmp2, y, 8) = "424C5553" Or Mid(tmp2, y, 8) = "42435553" Or Mid(tmp2, y, 8) = "42434553" Or Mid(tmp2, y, 8) = "4D525443" Then
             title = cv_StringFromHex(Mid(tmp2, x + 4, y - x - 3))
             'MsgBox Title
             End If
@@ -638,7 +645,7 @@ End Sub
 
 Private Sub Form_Load()
 'Set FSO = CreateObject("Scripting.FileSystemObject")
-Build = "0.1-alpha5"
+Build = "0.1-alpha6"
 checked = False
 tmp = ""
 Form1.Caption = "PS3SFV ISO Tool v" & Build & " (www.VTS-Tech.org)"
