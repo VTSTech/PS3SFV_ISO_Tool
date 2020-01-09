@@ -42,28 +42,28 @@ Begin VB.Form Form1
    Begin VB.CommandButton Command2 
       BackColor       =   &H00808080&
       Caption         =   "Verify"
-      Height          =   375
+      Height          =   255
       Left            =   5280
       TabIndex        =   1
-      Top             =   720
+      Top             =   905
       Width           =   735
    End
    Begin VB.CommandButton Command1 
       BackColor       =   &H00808080&
       Caption         =   "Select"
-      Height          =   375
+      Height          =   255
       Left            =   4440
       TabIndex        =   0
-      Top             =   720
+      Top             =   905
       Width           =   735
    End
    Begin VB.Frame Frame1 
       BackColor       =   &H00808080&
       Caption         =   "ISO"
-      Height          =   735
+      Height          =   555
       Left            =   4320
       TabIndex        =   3
-      Top             =   480
+      Top             =   680
       Width           =   1815
    End
    Begin VB.Label Label6 
@@ -490,7 +490,7 @@ End If
 If Len(title) = 0 Or id = "BLUS31437" Or id = "BLUS31385" Then
     For x = 0 To z
         If cv_StringFromHex(Mid(tmp4(x), 1, 4)) = "NP" Then
-            title = cv_StringFromHex(Mid(tmp4(x + 4), 1, Len(tmp4(x + 4))))
+            title = cv_StringFromHex(Mid(tmp4(x + 3), 1, Len(tmp4(x + 3))))
         End If
     Next x
     If fwver = "" Then fwver = cv_StringFromHex(Mid(tmp4(2), 1, Len(tmp4(2))))
