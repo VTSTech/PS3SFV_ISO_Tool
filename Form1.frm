@@ -4,19 +4,29 @@ Begin VB.Form Form1
    BackColor       =   &H00808080&
    BorderStyle     =   1  'Fixed Single
    Caption         =   "PS3SFV ISO Tool v0.1 by VTSTech (www.VTS-Tech.org)"
-   ClientHeight    =   2130
+   ClientHeight    =   2145
    ClientLeft      =   45
    ClientTop       =   390
    ClientWidth     =   6270
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   2130
+   ScaleHeight     =   2145
    ScaleWidth      =   6270
    StartUpPosition =   3  'Windows Default
+   Begin VB.CheckBox SkipCRC 
+      BackColor       =   &H00808080&
+      Caption         =   "Skip CRC"
+      ForeColor       =   &H0000FFFF&
+      Height          =   255
+      Left            =   120
+      TabIndex        =   21
+      Top             =   1560
+      Width           =   1095
+   End
    Begin MSComDlg.CommonDialog CommonDialog1 
-      Left            =   4320
-      Top             =   1680
+      Left            =   1320
+      Top             =   1440
       _ExtentX        =   847
       _ExtentY        =   847
       _Version        =   393216
@@ -427,16 +437,84 @@ gamever = ""
 fwver = ""
 tmp = ""
 tmp2 = ""
+tmp3 = ""
+tmp4 = ""
+x = 0
+z = 0
 tmp = Split(param_sfo, "5449544C455F49440056455253494F4E")
 gamever = cv_StringFromHex(Mid(tmp(1), Len(tmp(1)) - 15, 10))
 id = cv_StringFromHex(Mid(tmp(1), Len(tmp(1)) - 47, 18))
 tmp2 = Replace(tmp(1), "00", "")
 
+tmp3 = Split(tmp(1), "00")
+tmp4 = tmp3
+For x = 0 To UBound(tmp3)
+    If Len(tmp3(x)) >= 4 Then
+        tmp4(z) = tmp3(x)
+        z = z + 1
+    End If
+Next x
+'MsgBox z
+
+If z = 7 Then
+    title = cv_StringFromHex(Mid(tmp4(4), 1, Len(tmp4(4))))
+    If Len(id) = 0 Then id = cv_StringFromHex(Mid(tmp4(5), 1, Len(tmp4(5))))
+    If Len(gamever) = 0 Then gamever = cv_StringFromHex(Mid(tmp4(6), 1, Len(tmp4(6))))
+Else
+    If Len(title) = 0 Then title = cv_StringFromHex(Mid(tmp4(z - 3), 1, Len(tmp4(z - 3))))
+    If Len(id) = 0 Then id = cv_StringFromHex(Mid(tmp4(z - 2), 1, Len(tmp4(z - 2))))
+    If Len(gamever) = 0 Then gamever = cv_StringFromHex(Mid(tmp4(z - 1), 1, Len(tmp4(z - 1))))
+End If
+
+fwver = cv_StringFromHex(Mid(tmp4(3), 1, Len(tmp4(3)) - 2))
+
+If CheckVer(fwver) = False Then
+    fwver = ""
+End If
+
+If fwver = "" Then
+    For x = 0 To z
+        If cv_StringFromHex(Mid(tmp4(x), 1, 4)) = "NP" Then
+            fwver = cv_StringFromHex(Mid(tmp4(x + 1), 1, Len(tmp4(x + 1)) - 2))
+        End If
+    Next x
+End If
+
+'
+If CheckVer(fwver) = False Then
+    fwver = ""
+End If
+
+'BLUS31437 Diablo III, Many Titles, Multiple Language, Larger SFO
+'BLUS31385 Worms Revolution Collection Install Disc, Unusual, Smaller SFO
+If Len(title) = 0 Or id = "BLUS31437" Or id = "BLUS31385" Then
+    For x = 0 To z
+        If cv_StringFromHex(Mid(tmp4(x), 1, 4)) = "NP" Then
+            title = cv_StringFromHex(Mid(tmp4(x + 4), 1, Len(tmp4(x + 4))))
+        End If
+    Next x
+    If fwver = "" Then fwver = cv_StringFromHex(Mid(tmp4(2), 1, Len(tmp4(2))))
+    If CheckVer(fwver) = False Then
+        fwver = ""
+    End If
+End If
+x = 0
+z = 0
+
+If Len(title) >= 2 Then
+Else
+    title = ""
+End If
+
+'MsgBox title
+
 For x = 1 To Len(tmp2)
     If Mid(tmp2, x, 4) = "0701" Or Mid(tmp2, x, 4) = "0703" Or Mid(tmp2, x, 4) = "1701" Or Mid(tmp2, x, 4) = "1703" Or Mid(tmp2, x, 4) = "1515" Then
         For y = x To Len(tmp2)
             If Mid(tmp2, y, 8) = "424C4553" Or Mid(tmp2, y, 8) = "424C5553" Or Mid(tmp2, y, 8) = "42435553" Or Mid(tmp2, y, 8) = "42434553" Or Mid(tmp2, y, 8) = "4D525443" Then
-            title = cv_StringFromHex(Mid(tmp2, x + 4, y - x - 3))
+                If Len(title) = 0 Then
+                    title = cv_StringFromHex(Mid(tmp2, x + 4, y - x - 3))
+                End If
             'MsgBox Title
             End If
         Next y
@@ -492,10 +570,12 @@ If FSO.FileExists(fullpath) Then
     Next x
     'Extract PARAM.SFO from selected ISO using 7-Zip
     Shell (VB.App.path & "\bin\7z\7z e -y -o" & VB.App.path & "\tmp\ " & fullpath & " PS3_GAME\PARAM.SFO"), vbHide
-    Sleep (500)
-    'Begin calculate of CRC32 using 7-Zip
-    Shell ("cmd.exe /c " & Chr(34) & VB.App.path & "\bin\7z\7z h " & fullpath & Chr(34) & " >> " & VB.App.path & "\tmp\crc.txt"), vbHide
     Sleep (2500)
+    'Begin calculate of CRC32 using 7-Zip
+    If SkipCRC.Value = 0 Then
+        Shell ("cmd.exe /c " & Chr(34) & VB.App.path & "\bin\7z\7z h " & fullpath & Chr(34) & " >> " & VB.App.path & "\tmp\crc.txt"), vbHide
+        Sleep (2500)
+    End If
     'PARAM.SFO should be extracted now...
     If FSO.FileExists(VB.App.path & "\tmp\PARAM.SFO") Then
         param_sfo = cv_HexFromString(ReadFileIntoString(VB.App.path & "\tmp\PARAM.SFO"))
@@ -511,38 +591,41 @@ End If
 
 End Sub
 Public Function DoCRC()
-Set f = FSO.GetFile(VB.App.path & "\tmp\crc.txt")
-up = True
-z = 0
-'Calculating CRC can take time. We know ISO exist. If crc.txt doesn't must still be calculating.
-'Lets wait. Changes Form title with # 0 to 32767 and down ... then up and so on until crc.txt
-'is generated.
-While f.Size < 28
-Do
-    If z < 32767 And up = True Then
-    z = z + 1
-    Else
-    up = False
-    z = z - 1
-    If z = -32767 Then up = True
-    End If
-    Form1.Caption = "PS3SFV ISO Tool v" & Build & " (www.VTS-Tech.org)(Working: " & z & ")"
-Loop Until f.Size > 128
-Wend
-Form1.Caption = "PS3SFV ISO Tool v" & Build & " (www.VTS-Tech.org)"
-Sleep (2000)
-'crc.txt should be done now.
-crc_txt = ""
-Open VB.App.path & "\tmp\crc.txt" For Input As #2
-Do
-    Input #2, tmp
-    crc_txt = crc_txt & tmp
-Loop Until EOF(2)
-tmp2 = Mid(crc_txt, Len(crc_txt) - 23)
-CRC = Mid(tmp2, 1, 8)
-'MsgBox CRC
-Close #2
-
+If SkipCRC.Value = 0 Then
+    Set f = FSO.GetFile(VB.App.path & "\tmp\crc.txt")
+    up = True
+    z = 0
+    'Calculating CRC can take time. We know ISO exist. If crc.txt doesn't must still be calculating.
+    'Lets wait. Changes Form title with # 0 to 32767 and down ... then up and so on until crc.txt
+    'is generated.
+    While f.Size < 28
+    Do
+        If z < 32767 And up = True Then
+        z = z + 1
+        Else
+        up = False
+        z = z - 1
+        If z = -32767 Then up = True
+        End If
+        Form1.Caption = "PS3SFV ISO Tool v" & Build & " (www.VTS-Tech.org)(Working: " & z & ")"
+    Loop Until f.Size > 128
+    Wend
+    Form1.Caption = "PS3SFV ISO Tool v" & Build & " (www.VTS-Tech.org)"
+    Sleep (2000)
+    'crc.txt should be done now.
+    crc_txt = ""
+    Open VB.App.path & "\tmp\crc.txt" For Input As #2
+    Do
+        Input #2, tmp
+        crc_txt = crc_txt & tmp
+    Loop Until EOF(2)
+    tmp2 = Mid(crc_txt, Len(crc_txt) - 23)
+    CRC = Mid(tmp2, 1, 8)
+    'MsgBox CRC
+    Close #2
+ElseIf SkipCRC.Value = 1 Then
+    CRC = "00000000"
+End If
 End Function
 Public Function UpdFrm()
 Set FSO = CreateObject("Scripting.FileSystemObject")
@@ -661,7 +744,16 @@ End Sub
 
 Private Sub Form_Load()
 Set FSO = CreateObject("Scripting.FileSystemObject")
-Build = "0.1-beta2"
+Build = "0.1-beta3"
+Dev = 0
+SkipCRC.Value = 0
+If Dev = 0 Then
+    SkipCRC.Visible = False
+Else
+    SkipCRC.Visible = True
+    Build = Replace(Build, "beta", "dev-beta")
+End If
+
 checked = False
 tmp = ""
 Form1.Caption = "PS3SFV ISO Tool v" & Build & " (www.VTS-Tech.org)"
@@ -680,7 +772,16 @@ lbl_id = "BLUS00000"
 lbl_title = "PS3_GAME"
 a = UpdFrm()
 PS3SFVDB = GetFileList(VB.App.path & "\SFV\")
-Label6.Caption = "PS3SFV DB: " & UBound(PS3SFVDB) - 1 & " ISO"
+z = 0
+For x = 0 To UBound(PS3SFVDB)
+   If InStr(PS3SFVDB(x), "-IMAGE.SFV") > 1 Then
+    z = z + 1
+   End If
+Next x
+Label6.Caption = "PS3SFV DB: " & z & " ISO"
+
+z = 0
+x = 0
 End Sub
 Public Function GetFileList(folderspec)
     Dim fs, f, f1, fc, s
