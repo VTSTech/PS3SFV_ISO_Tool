@@ -1,7 +1,7 @@
 # PS3SFV_ISO_Tool
  PS3 ISO Verification tool with SFV support
 
-<img src="https://i.gyazo.com/0d37bbf2933ac77dcc434cf5dcf248e1.png">
+<img src="https://i.gyazo.com/595f67637525b25962e26bd61ec89a05.png">
 
 <a href="https://www.psx-place.com/threads/ps3-iso-verification-sfv.27706/">PSX-Place Discussion</a>
 
