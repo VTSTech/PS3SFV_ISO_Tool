@@ -56,6 +56,26 @@ Begin VB.Form Form1
       Top             =   480
       Width           =   1815
    End
+   Begin VB.Label Label6 
+      AutoSize        =   -1  'True
+      BackColor       =   &H00808080&
+      Caption         =   "PS3SFV DB: 0 ISO"
+      BeginProperty Font 
+         Name            =   "Arial"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H000080FF&
+      Height          =   210
+      Left            =   120
+      TabIndex        =   20
+      Top             =   1920
+      Width           =   1365
+   End
    Begin VB.Label Label17 
       AutoSize        =   -1  'True
       BackColor       =   &H00808080&
@@ -388,10 +408,7 @@ Dim sfv_title, sfv_id, sfv_crc, sfv_fwver, sfv_gamever, lbl_path, lbl_crc, lbl_i
 Dim checked, up As Boolean
 Dim param_sfo, crc_txt, tmp2, f, FSO
 Dim sfv_data(1024)
-Private Declare Function GetShortPathName Lib "kernel32" _
-   Alias "GetShortPathNameA" (ByVal lpszLongPath As String, _
-   ByVal lpszShortPath As String, ByVal cchBuffer As Long) _
-   As Long
+Dim PS3SFVDB
 Private Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
 
 Public Function CheckVer(ver)
@@ -407,6 +424,7 @@ Public Function ParseSFO(param_sfo)
 id = ""
 title = ""
 gamever = ""
+fwver = ""
 tmp = ""
 tmp2 = ""
 tmp = Split(param_sfo, "5449544C455F49440056455253494F4E")
@@ -427,9 +445,14 @@ For x = 1 To Len(tmp2)
                 fwver = cv_StringFromHex(Mid(tmp2, z, 10))
             End If
             If Mid(tmp2, z, 6) = "30312E" Then
-                For a = 2 To 9
+                For a = 0 To 9
                     If Mid(tmp2, z, 8) = "30312E" & cv_HexFromString(Val(a)) Then
-                        fwver = cv_StringFromHex(Mid(tmp2, z, 10))
+                        If Len(fwver) = 0 Then
+                            fwver = cv_StringFromHex(Mid(tmp2, z, 10))
+                        End If
+                        If fwver = "01.00" Then
+                            fwver = ""
+                        End If
                     End If
                 Next a
             End If
@@ -467,7 +490,7 @@ If FSO.FileExists(fullpath) Then
     For x = 0 To UBound(tmp) - 1
         path = path & tmp(x) & "\"
     Next x
-    'Extract PARAM.SFO from seelcted ISO using 7-Zip
+    'Extract PARAM.SFO from selected ISO using 7-Zip
     Shell (VB.App.path & "\bin\7z\7z e -y -o" & VB.App.path & "\tmp\ " & fullpath & " PS3_GAME\PARAM.SFO"), vbHide
     Sleep (500)
     'Begin calculate of CRC32 using 7-Zip
@@ -491,7 +514,7 @@ Public Function DoCRC()
 Set f = FSO.GetFile(VB.App.path & "\tmp\crc.txt")
 up = True
 z = 0
-'Generating CRC can take time. We know ISO exist. If crc.txt doesn't must still be generating.
+'Calculating CRC can take time. We know ISO exist. If crc.txt doesn't must still be calculating.
 'Lets wait. Changes Form title with # 0 to 32767 and down ... then up and so on until crc.txt
 'is generated.
 While f.Size < 28
@@ -637,8 +660,8 @@ a = UpdFrm()
 End Sub
 
 Private Sub Form_Load()
-'Set FSO = CreateObject("Scripting.FileSystemObject")
-Build = "0.1-beta1"
+Set FSO = CreateObject("Scripting.FileSystemObject")
+Build = "0.1-beta2"
 checked = False
 tmp = ""
 Form1.Caption = "PS3SFV ISO Tool v" & Build & " (www.VTS-Tech.org)"
@@ -656,8 +679,20 @@ lbl_crc = "00000000"
 lbl_id = "BLUS00000"
 lbl_title = "PS3_GAME"
 a = UpdFrm()
+PS3SFVDB = GetFileList(VB.App.path & "\SFV\")
+Label6.Caption = "PS3SFV DB: " & UBound(PS3SFVDB) - 1 & " ISO"
 End Sub
-
+Public Function GetFileList(folderspec)
+    Dim fs, f, f1, fc, s
+    Set fs = CreateObject("Scripting.FileSystemObject")
+    Set f = fs.GetFolder(folderspec)
+    Set fc = f.Files
+    For Each f1 In fc
+        s = s & f1.Name
+        s = s & vbCrLf
+    Next
+    GetFileList = Split(s, vbCrLf)
+End Function
 Private Sub Label1_Click()
 Clipboard.SetText Label1.Caption
 End Sub
@@ -674,7 +709,7 @@ Else
         Print #3, tmp
         Close #3
         Label12.ForeColor = &HFF00&
-        Label12.Caption = "Data Avail: YES"
+        Label12.Caption = "ISO CRC32: YES"
         MsgBox ("Verification Data written to " & VB.App.path & "\SFV\" & id & "-IMAGE.SFV")
     End If
 End If
