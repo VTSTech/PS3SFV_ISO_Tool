@@ -4,15 +4,15 @@ Begin VB.Form Form1
    BackColor       =   &H00808080&
    BorderStyle     =   1  'Fixed Single
    Caption         =   "PS3SFV ISO Tool v0.1 by VTSTech (www.VTS-Tech.org)"
-   ClientHeight    =   2145
+   ClientHeight    =   2295
    ClientLeft      =   45
    ClientTop       =   390
-   ClientWidth     =   6270
+   ClientWidth     =   6450
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   2145
-   ScaleWidth      =   6270
+   ScaleHeight     =   2295
+   ScaleWidth      =   6450
    StartUpPosition =   3  'Windows Default
    Begin VB.CheckBox SkipCRC 
       BackColor       =   &H00808080&
@@ -21,12 +21,12 @@ Begin VB.Form Form1
       Height          =   255
       Left            =   120
       TabIndex        =   21
-      Top             =   1560
+      Top             =   1680
       Width           =   1095
    End
    Begin MSComDlg.CommonDialog CommonDialog1 
-      Left            =   1320
-      Top             =   1440
+      Left            =   4680
+      Top             =   1800
       _ExtentX        =   847
       _ExtentY        =   847
       _Version        =   393216
@@ -37,13 +37,13 @@ Begin VB.Form Form1
       TabIndex        =   2
       Text            =   "C:\TEMP\Filename_BLUS00000_USA_PS3iSO-VTSTech.iso"
       Top             =   120
-      Width           =   6015
+      Width           =   6255
    End
    Begin VB.CommandButton Command2 
       BackColor       =   &H00808080&
       Caption         =   "Verify"
       Height          =   255
-      Left            =   5280
+      Left            =   5520
       TabIndex        =   1
       Top             =   905
       Width           =   735
@@ -52,7 +52,7 @@ Begin VB.Form Form1
       BackColor       =   &H00808080&
       Caption         =   "Select"
       Height          =   255
-      Left            =   4440
+      Left            =   4680
       TabIndex        =   0
       Top             =   905
       Width           =   735
@@ -61,10 +61,90 @@ Begin VB.Form Form1
       BackColor       =   &H00808080&
       Caption         =   "ISO"
       Height          =   555
-      Left            =   4320
+      Left            =   4560
       TabIndex        =   3
       Top             =   680
       Width           =   1815
+   End
+   Begin VB.Label Title4 
+      AutoSize        =   -1  'True
+      BackColor       =   &H00808080&
+      Caption         =   "Orig"
+      BeginProperty Font 
+         Name            =   "Arial"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H0000FF00&
+      Height          =   210
+      Left            =   2520
+      TabIndex        =   25
+      Top             =   1440
+      Width           =   345
+   End
+   Begin VB.Label Title3 
+      AutoSize        =   -1  'True
+      BackColor       =   &H00808080&
+      Caption         =   "Title 3"
+      BeginProperty Font 
+         Name            =   "Arial"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H0000FF00&
+      Height          =   210
+      Left            =   1680
+      TabIndex        =   24
+      Top             =   1440
+      Width           =   495
+   End
+   Begin VB.Label Title2 
+      AutoSize        =   -1  'True
+      BackColor       =   &H00808080&
+      Caption         =   "Title 2"
+      BeginProperty Font 
+         Name            =   "Arial"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H0000FF00&
+      Height          =   210
+      Left            =   900
+      TabIndex        =   23
+      Top             =   1440
+      Width           =   495
+   End
+   Begin VB.Label Title1 
+      AutoSize        =   -1  'True
+      BackColor       =   &H00808080&
+      Caption         =   "Title 1"
+      BeginProperty Font 
+         Name            =   "Arial"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H0000FF00&
+      Height          =   210
+      Left            =   120
+      TabIndex        =   22
+      Top             =   1440
+      Width           =   495
    End
    Begin VB.Label Label6 
       AutoSize        =   -1  'True
@@ -83,7 +163,7 @@ Begin VB.Form Form1
       Height          =   210
       Left            =   120
       TabIndex        =   20
-      Top             =   1920
+      Top             =   2040
       Width           =   1365
    End
    Begin VB.Label Label17 
@@ -101,9 +181,9 @@ Begin VB.Form Form1
       EndProperty
       ForeColor       =   &H000000FF&
       Height          =   210
-      Left            =   4815
+      Left            =   5055
       TabIndex        =   19
-      Top             =   1440
+      Top             =   1560
       Width           =   1320
    End
    Begin VB.Label Label16 
@@ -195,15 +275,15 @@ Begin VB.Form Form1
          Size            =   8.25
          Charset         =   0
          Weight          =   700
-         Underline       =   0   'False
+         Underline       =   -1  'True
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
       ForeColor       =   &H000000FF&
       Height          =   210
-      Left            =   4980
+      Left            =   5220
       TabIndex        =   14
-      Top             =   1680
+      Top             =   1800
       Width           =   1155
    End
    Begin VB.Label Label11 
@@ -301,9 +381,9 @@ Begin VB.Form Form1
       EndProperty
       ForeColor       =   &H000000FF&
       Height          =   210
-      Left            =   5160
+      Left            =   5400
       TabIndex        =   9
-      Top             =   1920
+      Top             =   2040
       Width           =   975
    End
    Begin VB.Label Label5 
@@ -315,15 +395,15 @@ Begin VB.Form Form1
          Size            =   8.25
          Charset         =   0
          Weight          =   700
-         Underline       =   0   'False
+         Underline       =   -1  'True
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
       ForeColor       =   &H0000C0C0&
       Height          =   210
-      Left            =   2010
+      Left            =   2092
       TabIndex        =   8
-      Top             =   1920
+      Top             =   2040
       Width           =   2250
    End
    Begin VB.Label Label4 
@@ -335,15 +415,15 @@ Begin VB.Form Form1
          Size            =   8.25
          Charset         =   0
          Weight          =   700
-         Underline       =   0   'False
+         Underline       =   -1  'True
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
       ForeColor       =   &H0000C0C0&
       Height          =   210
-      Left            =   2325
+      Left            =   2407
       TabIndex        =   7
-      Top             =   1680
+      Top             =   1800
       Width           =   1620
    End
    Begin VB.Label Label3 
@@ -413,7 +493,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Dim a, x, y, z As Integer
-Dim tmp, fn, id, CRC, path, fw, title, fullpath, Build, gamever, fwver, ver As String
+Dim tmp, fn, id, CRC, path, fw, title, Titl1, Titl2, Titl3, Titl4, fullpath, Build, gamever, fwver, ver As String
 Dim sfv_title, sfv_id, sfv_crc, sfv_fwver, sfv_gamever, lbl_path, lbl_crc, lbl_id, lbl_fn, lbl_fw, lbl_title, lbl_gamever, lbl_fwver As String
 Dim checked, up As Boolean
 Dim param_sfo, crc_txt, tmp2, f, FSO
@@ -433,6 +513,9 @@ Public Function ParseSFO(param_sfo)
 'param_sfo = cv_HexFromString(ReadFileIntoString(VB.App.Path & "\tmp\SKY.SFO"))
 id = ""
 title = ""
+Titl1 = ""
+Titl2 = ""
+Titl3 = ""
 gamever = ""
 fwver = ""
 tmp = ""
@@ -461,9 +544,17 @@ If z = 7 Then
     If Len(id) = 0 Then id = cv_StringFromHex(Mid(tmp4(5), 1, Len(tmp4(5))))
     If Len(gamever) = 0 Then gamever = cv_StringFromHex(Mid(tmp4(6), 1, Len(tmp4(6))))
 Else
+    Title1.Visible = True
+    Title2.Visible = True
+    Title3.Visible = True
+    Title4.Visible = True
     If Len(title) = 0 Then title = cv_StringFromHex(Mid(tmp4(z - 3), 1, Len(tmp4(z - 3))))
+    If Len(Titl1) = 0 Then Titl1 = cv_StringFromHex(Mid(tmp4(z - 4), 1, Len(tmp4(z - 4))))
+    If Len(Titl2) = 0 Then Titl2 = cv_StringFromHex(Mid(tmp4(z - 5), 1, Len(tmp4(z - 5))))
+    If Len(Titl3) = 0 Then Titl3 = cv_StringFromHex(Mid(tmp4(z - 6), 1, Len(tmp4(z - 6))))
     If Len(id) = 0 Then id = cv_StringFromHex(Mid(tmp4(z - 2), 1, Len(tmp4(z - 2))))
     If Len(gamever) = 0 Then gamever = cv_StringFromHex(Mid(tmp4(z - 1), 1, Len(tmp4(z - 1))))
+    Titl4 = title
 End If
 
 fwver = cv_StringFromHex(Mid(tmp4(3), 1, Len(tmp4(3)) - 2))
@@ -554,6 +645,10 @@ Shell ("cmd.exe /c del " & VB.App.path & "\tmp\PARAM.SFO"), vbHide
 Shell ("cmd.exe /c del " & VB.App.path & "\tmp\crc.txt"), vbHide
 Label7.ForeColor = &HFF&
 Label7.Caption = "Verified: NO"
+Title1.Visible = False
+Title2.Visible = False
+Title3.Visible = False
+Title4.Visible = False
 Sleep (250)
 Set FSO = CreateObject("Scripting.FileSystemObject")
 CommonDialog1.Filter = "Select ISO (*.iso)|*.iso|All files (*.*)|*.*"
@@ -744,9 +839,13 @@ End Sub
 
 Private Sub Form_Load()
 Set FSO = CreateObject("Scripting.FileSystemObject")
-Build = "0.1-beta3"
+Build = "0.1-beta4"
 Dev = 0
 SkipCRC.Value = 0
+Title1.Visible = False
+Title2.Visible = False
+Title3.Visible = False
+Title4.Visible = False
 If Dev = 0 Then
     SkipCRC.Visible = False
 Else
@@ -800,18 +899,23 @@ End Sub
 
 Private Sub Label12_Click()
 Set FSO = CreateObject("Scripting.FileSystemObject")
-If CRC = "00000000" Then
-Else
-    If FSO.FileExists(VB.App.path & "\SFV\" & id & "-IMAGE.SFV") Then
-        MsgBox "Verification Available!"
+tmp = MsgBox("This will write verification data. Continue?", vbYesNo, "Continue?")
+If tmp = vbYes Then
+    If CRC = "00000000" Then
+        MsgBox "Write Verification Data Disabled while Skip CRC Enabled!"
     Else
-        Open (VB.App.path & "\SFV\" & id & "-IMAGE.SFV") For Output As #3
-        tmp = ";Generated by PS3SFV ISO Tool v" & Build & ". Do Not Modify!" & vbCrLf & ";TITLE=" & title & vbCrLf & ";DISCID=" & id & vbCrLf & ";GAMEVER=" & gamever & vbCrLf & ";FWVER=" & fwver & vbCrLf & fn & " " & CRC
-        Print #3, tmp
-        Close #3
-        Label12.ForeColor = &HFF00&
-        Label12.Caption = "ISO CRC32: YES"
-        MsgBox ("Verification Data written to " & VB.App.path & "\SFV\" & id & "-IMAGE.SFV")
+        If FSO.FileExists(VB.App.path & "\SFV\" & id & "-IMAGE.SFV") Then
+            tmp = MsgBox("Verification Data already available! Overwrite?", vbYesNo, "Overwrite?")
+            If tmp = vbYes Then
+                Open (VB.App.path & "\SFV\" & id & "-IMAGE.SFV") For Output As #3
+                tmp = ";Generated by PS3SFV ISO Tool v" & Build & ". Do Not Modify!" & vbCrLf & ";TITLE=" & title & vbCrLf & ";DISCID=" & id & vbCrLf & ";GAMEVER=" & gamever & vbCrLf & ";FWVER=" & fwver & vbCrLf & fn & " " & CRC
+                Print #3, tmp
+                Close #3
+                Label12.ForeColor = &HFF00&
+                Label12.Caption = "ISO CRC32: YES"
+                MsgBox ("Verification Data written to " & VB.App.path & "\SFV\" & id & "-IMAGE.SFV")
+            End If
+        End If
     End If
 End If
 End Sub
@@ -834,4 +938,24 @@ End Sub
 
 Private Sub Label6_Click()
 Clipboard.SetText Label6.Caption
+End Sub
+
+Private Sub Title1_Click()
+title = Titl1
+a = UpdFrm()
+End Sub
+
+Private Sub Title2_Click()
+title = Titl2
+a = UpdFrm()
+End Sub
+
+Private Sub Title3_Click()
+title = Titl3
+a = UpdFrm()
+End Sub
+
+Private Sub Title4_Click()
+title = Titl4
+a = UpdFrm()
 End Sub

@@ -1,7 +1,7 @@
 # PS3SFV_ISO_Tool
  PS3 ISO Verification tool with SFV support
 
-<img src="https://i.gyazo.com/595f67637525b25962e26bd61ec89a05.png">
+<img src="https://i.gyazo.com/c521c60ec58e04f8147ce8716c3e4d3a.png">
 
 <a href="https://www.psx-place.com/threads/ps3-iso-verification-sfv.27706/">PSX-Place Discussion</a>
 
@@ -9,7 +9,7 @@
 Usage:
 
 Select ISO to fill out fields.
-Click 'Data Avail: NO' to save Verification Data.
+Click 'ISO CRC32: NO' to save Verification Data.
 Click Verify to use available Verification Data against selected ISO</pre>
 
 
